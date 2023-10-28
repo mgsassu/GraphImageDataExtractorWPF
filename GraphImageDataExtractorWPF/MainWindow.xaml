@@ -8,9 +8,37 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <StackPanel Orientation="Vertical">
-            <Button x:Name="btnLoadImage" Content="Load Image" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="btnLoadImage_Click"/>
+            <Grid Background="DarkGray">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="25" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="100" />
+                </Grid.ColumnDefinitions>
+                <Button x:Name="btnLoadImage" Content="Load Image" FontSize="14" Grid.Row="0" Grid.Column="0"
+                        HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnLoadImage_Click"/>
+                <Button x:Name="btnSetColor" Content="Set Color" FontSize="14" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3"
+                        HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnSetColor_Click"/>
+                <Label Content="R:" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" />
+                <Label Content="G:" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" />
+                <Label Content="B:" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" />
+                <Label Content="{Binding Path=RMove, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2" />
+                <Label Content="{Binding Path=GMove, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="2" />
+                <Label Content="{Binding Path=BMove, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="2" />
+                <TextBox Text="{Binding Path=RSaved, Mode=TwoWay}" IsHitTestVisible="False" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="3" Width="60"/>
+                <TextBox Text="{Binding Path=GSaved, Mode=TwoWay}" IsHitTestVisible="False" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" Width="60"/>
+                <TextBox Text="{Binding Path=BSaved, Mode=TwoWay}" IsHitTestVisible="False" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="3" Width="60"/>
+            </Grid>
             <Viewbox x:Name="imageViewBox" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="auto">
-                <Image Name="imageControl" />
+                <Image Name="imageControl" MouseMove="imageControl_MouseMove" MouseUp="imageControl_MouseUp" />
             </Viewbox>
         </StackPanel>
 
