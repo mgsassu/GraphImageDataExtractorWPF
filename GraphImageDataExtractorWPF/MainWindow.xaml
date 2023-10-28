@@ -43,7 +43,7 @@
         <Grid Background="Black" Grid.Row="1">
             <ScrollViewer Name="scrollViewer" Focusable="False" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden" Grid.Column="0" Grid.Row="0">
                 <Viewbox x:Name="imageViewBox" Margin="10,10,10,10" ClipToBounds="True">
-                    <Image Name="imageControl" MouseMove="imageControl_MouseMove" MouseUp="imageControl_MouseUp" />
+                    <Image Name="imageControl" MouseDown="imageControl_MouseDown" MouseMove="imageControl_MouseMove" MouseUp="imageControl_MouseUp" />
                 </Viewbox>
             </ScrollViewer>
         </Grid>

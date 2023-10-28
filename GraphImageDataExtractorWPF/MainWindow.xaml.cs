@@ -38,14 +38,20 @@ namespace GraphImageDataExtractorWPF
       private BitmapImage bitmapImage;
       private int bytesPerPixel = 4;
       private byte[] pixels = new byte[0];
+
       private bool setColor = false;
+
       private int rMove = 0;
       private int gMove = 0;
       private int bMove = 0;
       private int rSaved = 0;
       private int gSaved = 0;
       private int bSaved = 0;
+
       private double currentZoom = 1.0;
+
+      private bool panning = false;
+      private Point startPt;
       #endregion
 
       #region Constructor
@@ -56,10 +62,11 @@ namespace GraphImageDataExtractorWPF
          DataContext = this;
 
          // Set up Zoom
-         
          PreviewMouseWheel += new MouseWheelEventHandler(MainWindow_PreviewMouseWheel);
-         //scrollViewer.ScrollChanged += new ScrollChangedEventHandler(scrollViewer_ScrollChanged);
          ResetZoom();
+
+         // Set up panning
+
       }
       #endregion
 
@@ -171,8 +178,6 @@ namespace GraphImageDataExtractorWPF
 
       private void btnLoadImage_Click(object sender, RoutedEventArgs e)
       {
-         
-
          // Open file
          OpenFileDialog ofd = new OpenFileDialog();
          ofd.Multiselect = false;
@@ -204,17 +209,41 @@ namespace GraphImageDataExtractorWPF
          setColor = true;
       }
 
+      private void imageControl_MouseDown(object sender, MouseButtonEventArgs e)
+      {
+         if (e.MouseDevice.MiddleButton == MouseButtonState.Pressed)
+         {
+            panning = true;
+            startPt = e.GetPosition(scrollViewer);
+            Cursor = Cursors.Hand;
+         }
+      }
+
       private void imageControl_MouseMove(object sender, MouseEventArgs e)
       {
-         Point p = e.GetPosition(imageControl);
-         int i = ((int)p.X + (int)p.Y * (int)bitmapImage.Width) * bytesPerPixel;
+         // If the middle mouse button is pressed, handle accordingly.
+         if (panning)
+         {
+            double deltaX = e.GetPosition(scrollViewer).X - startPt.X;
+            double deltaY = e.GetPosition(scrollViewer).Y - startPt.Y;
+            startPt = e.GetPosition(scrollViewer);
+            scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - deltaX);
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - deltaY);
+         }
+         // Otherwise, output the 
+         else
+         {
+            Point p = e.GetPosition(imageControl);
+            int i = ((int)p.X + (int)p.Y * (int)bitmapImage.Width) * bytesPerPixel;
 
-         if (i < 0 || i >= pixels.Length)
-            return;
-         
-         BMove = pixels[i];
-         GMove = pixels[i+1];
-         RMove = pixels[i+2];
+            if (i < 0 || i >= pixels.Length)
+               return;
+
+            BMove = pixels[i];
+            GMove = pixels[i + 1];
+            RMove = pixels[i + 2];
+         }
+
       }
 
       private void imageControl_MouseUp(object sender, MouseButtonEventArgs e)
@@ -228,10 +257,14 @@ namespace GraphImageDataExtractorWPF
             BSaved = pixels[i];
             GSaved = pixels[i + 1];
             RSaved = pixels[i + 2];
+            // Set bool back to false so chosen colors aren't overwritten
+            setColor = false;
          }
-
-         // Set bool back to false so chosen colors aren't overwritten
-         setColor= false;
+         else if (panning)
+         {
+            panning = false;
+            Cursor = Cursors.Arrow;
+         } 
       }
 
       #endregion
@@ -284,18 +317,8 @@ namespace GraphImageDataExtractorWPF
 
          this.imageViewBox.BringIntoView(new Rect(pt, new Size(this.scrollViewer.ViewportWidth, this.scrollViewer.ViewportHeight)));
       }
-
-      //private void scrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
-      //{
-      //   if (e.ViewportWidthChange != 0)
-      //   {
-      //      imageViewBox.Width = this.scrollViewer.ViewportWidth * currentZoom;
-      //   }
-      //   if (e.ViewportHeightChange != 0)
-      //   {
-      //      imageViewBox.Height = this.scrollViewer.ViewportHeight * currentZoom;
-      //   }
-      //}
       #endregion
+
+      
    }
 }
