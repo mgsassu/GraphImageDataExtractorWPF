@@ -39,9 +39,11 @@
             <Label Content="{Binding Path=RMove, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2" />
             <Label Content="{Binding Path=GMove, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="2" />
             <Label Content="{Binding Path=BMove, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="2" />
-            <TextBox Text="{Binding Path=RSaved, Mode=TwoWay}" IsHitTestVisible="False" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="3" Width="60"/>
-            <TextBox Text="{Binding Path=GSaved, Mode=TwoWay}" IsHitTestVisible="False" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" Width="60"/>
-            <TextBox Text="{Binding Path=BSaved, Mode=TwoWay}" IsHitTestVisible="False" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="3" Width="60"/>
+            <Label Content="Color Error:" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" />
+            <TextBox Text="{Binding Path=RSaved, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="3" Width="60"/>
+            <TextBox Text="{Binding Path=GSaved, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" Width="60"/>
+            <TextBox Text="{Binding Path=BSaved, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="3" Width="60"/>
+            <TextBox Text="{Binding Path=ColorError, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4" Grid.Column="3" Width="60"/>
             
             <Label Content="Pixel Location:" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.Column="5" />
             <Button x:Name="btnSetXStart" Content="Set X Start" FontSize="14" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnSetXStart_Click"/>

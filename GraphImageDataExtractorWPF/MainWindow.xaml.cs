@@ -48,6 +48,7 @@ namespace GraphImageDataExtractorWPF
       private int rSaved = 0;
       private int gSaved = 0;
       private int bSaved = 0;
+      private int colorError = 5;
 
       private double currentZoom = 1.0;
 
@@ -178,6 +179,22 @@ namespace GraphImageDataExtractorWPF
          {
             bSaved = value;
             OnPropertyChanged(nameof(BSaved));
+         }
+      }
+
+      /// <summary>
+      /// Current B value
+      /// </summary>
+      public int ColorError
+      {
+         get
+         {
+            return colorError;
+         }
+         set
+         {
+            colorError = value;
+            OnPropertyChanged(nameof(ColorError));
          }
       }
 
@@ -492,10 +509,11 @@ namespace GraphImageDataExtractorWPF
                for (int row = 0; row < bitmapImage.PixelHeight; row++)
                {
                   // Get pixel location from array
-                  int index = col + row * bitmapImage.PixelWidth;
-                  if (pixels[index] == BSaved &&
-                      pixels[index + 1] == GSaved &&
-                      pixels[index + 2] == RSaved)
+                  int index = (col + row * bitmapImage.PixelWidth) * bytesPerPixel;
+
+                  if (BSaved - colorError < pixels[index] && pixels[index] < BSaved + colorError &&
+                     GSaved - colorError < pixels[index+1] && pixels[index+1] < GSaved + colorError &&
+                     RSaved - colorError < pixels[index+2] && pixels[index+2] < RSaved + colorError)
                   {
                      pixelDict[col].Add(row);
                   }
@@ -530,8 +548,8 @@ namespace GraphImageDataExtractorWPF
                }
                else
                {
-                  xArr.Add(Convert.ToString((col - xStart) * xMultiplier));
-                  yArr.Add(Convert.ToString((yStart - averageDict[col]) * yMultiplier));
+                  xArr.Add(Convert.ToString((col - xStart) * xMultiplier) + xDataStart);
+                  yArr.Add(Convert.ToString((yStart - averageDict[col]) * yMultiplier) + yDataStart);
                }
             }
 
