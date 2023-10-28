@@ -12,34 +12,56 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Background="DarkGray" Grid.Row="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="40"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="25" />
-                    <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="80" />
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="100" />
-                </Grid.ColumnDefinitions>
-                <Button x:Name="btnLoadImage" Content="Load Image" FontSize="14" Grid.Row="0" Grid.Column="0"
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="25" />
+                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="120" />
+                <ColumnDefinition Width="110" />
+                <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
+            <Button x:Name="btnLoadImage" Content="Load Image" FontSize="14" Grid.Row="0" Grid.Column="0"
                         HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnLoadImage_Click"/>
-                <Button x:Name="btnSetColor" Content="Set Color" FontSize="14" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3"
+            <Button x:Name="btnSetColor" Content="Set Color" FontSize="14" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3"
                         HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnSetColor_Click"/>
-                <Label Content="R:" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" />
-                <Label Content="G:" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" />
-                <Label Content="B:" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" />
-                <Label Content="{Binding Path=RMove, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2" />
-                <Label Content="{Binding Path=GMove, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="2" />
-                <Label Content="{Binding Path=BMove, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="2" />
-                <TextBox Text="{Binding Path=RSaved, Mode=TwoWay}" IsHitTestVisible="False" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="3" Width="60"/>
-                <TextBox Text="{Binding Path=GSaved, Mode=TwoWay}" IsHitTestVisible="False" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" Width="60"/>
-                <TextBox Text="{Binding Path=BSaved, Mode=TwoWay}" IsHitTestVisible="False" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="3" Width="60"/>
-            </Grid>
+            <Label Content="R:" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" />
+            <Label Content="G:" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" />
+            <Label Content="B:" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="1" />
+            <Label Content="{Binding Path=RMove, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="2" />
+            <Label Content="{Binding Path=GMove, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="2" />
+            <Label Content="{Binding Path=BMove, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="2" />
+            <TextBox Text="{Binding Path=RSaved, Mode=TwoWay}" IsHitTestVisible="False" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="3" Width="60"/>
+            <TextBox Text="{Binding Path=GSaved, Mode=TwoWay}" IsHitTestVisible="False" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" Width="60"/>
+            <TextBox Text="{Binding Path=BSaved, Mode=TwoWay}" IsHitTestVisible="False" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="3" Width="60"/>
+            
+            <Label Content="Pixel Location:" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.Column="5" />
+            <Button x:Name="btnSetXStart" Content="Set X Start" FontSize="14" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnSetXStart_Click"/>
+            <TextBox Text="{Binding Path=XStart, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="5" Width="60"/>
+            <Button x:Name="btnSetXEnd" Content="Set X End" FontSize="14" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnSetXEnd_Click"/>
+            <TextBox Text="{Binding Path=XEnd, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="5" Width="60"/>
+            <Button x:Name="btnSetYStart" Content="Set Y Start" FontSize="14" Grid.Row="3" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnSetYStart_Click"/>
+            <TextBox Text="{Binding Path=YStart, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="5" Width="60"/>
+            <Button x:Name="btnSetYEnd" Content="Set Y End" FontSize="14" Grid.Row="4" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnSetYEnd_Click"/>
+            <TextBox Text="{Binding Path=YEnd, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4" Grid.Column="5" Width="60"/>
+
+            <Label Content="Data Range:" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.Column="6" />
+            <TextBox Text="{Binding Path=XDataStart, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Grid.Column="6" Width="60"/>
+            <TextBox Text="{Binding Path=XDataEnd, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="6" Width="60"/>
+            <TextBox Text="{Binding Path=YDataStart, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="6" Width="60"/>
+            <TextBox Text="{Binding Path=YDataEnd, Mode=TwoWay}" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="4" Grid.Column="6" Width="60"/>
+
+            <Button x:Name="btnExportData" Content="Export Data" FontSize="14" Grid.Row="0" Grid.Column="7"
+            HorizontalAlignment="Center" VerticalAlignment="Center" Click="btnExportData_Click"/>
+        </Grid>
         <Grid Background="Black" Grid.Row="1">
             <ScrollViewer Name="scrollViewer" Focusable="False" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden" Grid.Column="0" Grid.Row="0">
                 <Viewbox x:Name="imageViewBox" Margin="10,10,10,10" ClipToBounds="True">

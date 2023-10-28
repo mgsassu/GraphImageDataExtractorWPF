@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -52,6 +53,19 @@ namespace GraphImageDataExtractorWPF
 
       private bool panning = false;
       private Point startPt;
+
+      private bool setXStart = false;
+      private bool setXEnd = false;
+      private bool setYStart = false;
+      private bool setYEnd = false;
+      private double xStart = 0;
+      private double xEnd = 0;
+      private double yStart = 0;
+      private double yEnd = 0;
+      private double xDataStart = 0;
+      private double xDataEnd = 0;
+      private double yDataStart = 0;
+      private double yDataEnd = 0;
       #endregion
 
       #region Constructor
@@ -166,6 +180,134 @@ namespace GraphImageDataExtractorWPF
             OnPropertyChanged(nameof(BSaved));
          }
       }
+
+      /// <summary>
+      /// Current XStart value
+      /// </summary>
+      public double XStart
+      {
+         get
+         {
+            return xStart;
+         }
+         set
+         {
+            xStart = value;
+            OnPropertyChanged(nameof(XStart));
+         }
+      }
+
+      /// <summary>
+      /// Current XEnd value
+      /// </summary>
+      public double XEnd
+      {
+         get
+         {
+            return xEnd;
+         }
+         set
+         {
+            xEnd = value;
+            OnPropertyChanged(nameof(XEnd));
+         }
+      }
+
+      /// <summary>
+      /// Current YStart value
+      /// </summary>
+      public double YStart
+      {
+         get
+         {
+            return yStart;
+         }
+         set
+         {
+            yStart = value;
+            OnPropertyChanged(nameof(YStart));
+         }
+      }
+
+      /// <summary>
+      /// Current YEnd value
+      /// </summary>
+      public double YEnd
+      {
+         get
+         {
+            return yEnd;
+         }
+         set
+         {
+            yEnd = value;
+            OnPropertyChanged(nameof(YEnd));
+         }
+      }
+
+      /// <summary>
+      /// Current XDataStart value
+      /// </summary>
+      public double XDataStart
+      {
+         get
+         {
+            return xDataStart;
+         }
+         set
+         {
+            xDataStart = value;
+            OnPropertyChanged(nameof(XDataStart));
+         }
+      }
+
+      /// <summary>
+      /// Current XEnd value
+      /// </summary>
+      public double XDataEnd
+      {
+         get
+         {
+            return xDataEnd;
+         }
+         set
+         {
+            xDataEnd = value;
+            OnPropertyChanged(nameof(XDataEnd));
+         }
+      }
+
+      /// <summary>
+      /// Current YStart value
+      /// </summary>
+      public double YDataStart
+      {
+         get
+         {
+            return yDataStart;
+         }
+         set
+         {
+            yDataStart = value;
+            OnPropertyChanged(nameof(YDataStart));
+         }
+      }
+
+      /// <summary>
+      /// Current YEnd value
+      /// </summary>
+      public double YDataEnd
+      {
+         get
+         {
+            return yDataEnd;
+         }
+         set
+         {
+            yDataEnd = value;
+            OnPropertyChanged(nameof(YDataEnd));
+         }
+      }
       #endregion
 
       #region Event Handlers and Functions
@@ -230,7 +372,7 @@ namespace GraphImageDataExtractorWPF
             scrollViewer.ScrollToHorizontalOffset(scrollViewer.HorizontalOffset - deltaX);
             scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - deltaY);
          }
-         // Otherwise, output the 
+         // Otherwise, output the colors of the current pixel
          else
          {
             Point p = e.GetPosition(imageControl);
@@ -264,29 +406,27 @@ namespace GraphImageDataExtractorWPF
          {
             panning = false;
             Cursor = Cursors.Arrow;
-         } 
-      }
-
-      #endregion
-
-      #region Private Methods
-      public void GetPixels(BitmapSource source, ref byte[] pc)
-      {
-         if (source.Format != PixelFormats.Bgra32)
-            source = new FormatConvertedBitmap(source, PixelFormats.Bgra32, null, 0);
-         
-         int width = source.PixelWidth;
-         int height = source.PixelHeight;
-
-         pc = new byte[width * height * bytesPerPixel];
-         source.CopyPixels(pc, width * bytesPerPixel, 0);
-      }
-
-      private void ResetZoom()
-      {
-         currentZoom = NoZoom;
-         imageViewBox.Width = scrollViewer.ViewportWidth;
-         imageViewBox.Height = scrollViewer.ViewportHeight;
+         }
+         else if (setXStart)
+         {
+            XStart = e.GetPosition(imageControl).X;
+            setXStart = false;
+         }
+         else if (setXEnd)
+         {
+            XEnd = e.GetPosition(imageControl).X;
+            setXEnd = false;
+         }
+         else if (setYStart)
+         {
+            YStart = e.GetPosition(imageControl).Y;
+            setYStart = false;
+         }
+         else if (setYEnd)
+         {
+            YEnd = e.GetPosition(imageControl).Y;
+            setYEnd = false;
+         }
       }
 
       private void MainWindow_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
@@ -317,8 +457,141 @@ namespace GraphImageDataExtractorWPF
 
          this.imageViewBox.BringIntoView(new Rect(pt, new Size(this.scrollViewer.ViewportWidth, this.scrollViewer.ViewportHeight)));
       }
+
+      private void btnSetXStart_Click(object sender, RoutedEventArgs e)
+      {
+         setXStart = true;
+      }
+
+      private void btnSetXEnd_Click(object sender, RoutedEventArgs e)
+      {
+         setXEnd = true;
+      }
+
+      private void btnSetYStart_Click(object sender, RoutedEventArgs e)
+      {
+         setYStart = true;
+      }
+
+      private void btnSetYEnd_Click(object sender, RoutedEventArgs e)
+      {
+         setYEnd = true;
+      }
+
+      private void btnExportData_Click(object sender, RoutedEventArgs e)
+      {
+         // Whole thing in a try catch block
+         try
+         {
+            // Loop through each column, and get an average of the pixel locations that contain the selected color
+            Dictionary<int, List<int>> pixelDict = new Dictionary<int, List<int>>();
+            for (int col = 0; col < bitmapImage.PixelWidth; col++)
+            {
+               // New dict entry for the column
+               pixelDict[col] = new List<int>();
+               for (int row = 0; row < bitmapImage.PixelHeight; row++)
+               {
+                  // Get pixel location from array
+                  int index = col + row * bitmapImage.PixelWidth;
+                  if (pixels[index] == BSaved &&
+                      pixels[index + 1] == GSaved &&
+                      pixels[index + 2] == RSaved)
+                  {
+                     pixelDict[col].Add(row);
+                  }
+               }
+            }
+
+            // Loop through dict, get an average location for each column
+            Dictionary<int, double> averageDict = new Dictionary<int, double>();
+            foreach (int col in pixelDict.Keys)
+            {
+               averageDict[col] = Average(pixelDict[col]);
+            }
+
+            // Get conversions from pixel to data ranges
+            // Note: The y start and end on the pixel end are flipped because row increases as you go down an image. 
+            // In pictures of a graph, this will be reversed of course. 
+            double xMultiplier = (xDataEnd - xDataStart) / (xEnd - xStart);
+            double yMultiplier = (yDataEnd - yDataStart) / (yStart - yEnd);
+
+            // Just going to make 2 string arrays, for speed
+            List<string> xArr = new List<string>();
+            List<string> yArr = new List<string>();
+            foreach (int col in averageDict.Keys)
+            {
+               // Convert row and col to data
+               // Note: The y pixel shift is flipped here too, same reason as above
+               // Also, if value is -1, append empty strings
+               if (averageDict[col] == -1)
+               {
+                  xArr.Add("");
+                  yArr.Add("");
+               }
+               else
+               {
+                  xArr.Add(Convert.ToString((col - xStart) * xMultiplier));
+                  yArr.Add(Convert.ToString((yStart - averageDict[col]) * yMultiplier));
+               }
+            }
+
+            // Export to csv
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "CSV file (*.csv)|*.csv| All Files (*.*)|*.*";
+            if (sfd.ShowDialog() == true)
+            {
+               using (StreamWriter sw = new StreamWriter(sfd.FileName))
+               {
+                  sw.WriteLine("x,y");
+                  for (int i = 0; i < xArr.Count; i++)
+                  {
+                     sw.WriteLine(xArr[i] + "," + yArr[i]);
+                  }
+               }
+            }
+         }
+         catch (Exception ex)
+         {
+            MessageBox.Show("Exception Encountered: " + ex.ToString());
+            return;
+         }
+      }
       #endregion
 
-      
+      #region Private Methods
+      public void GetPixels(BitmapSource source, ref byte[] pc)
+      {
+         if (source.Format != PixelFormats.Bgra32)
+            source = new FormatConvertedBitmap(source, PixelFormats.Bgra32, null, 0);
+         
+         int width = source.PixelWidth;
+         int height = source.PixelHeight;
+
+         pc = new byte[width * height * bytesPerPixel];
+         source.CopyPixels(pc, width * bytesPerPixel, 0);
+      }
+
+      private void ResetZoom()
+      {
+         currentZoom = NoZoom;
+         imageViewBox.Width = scrollViewer.ViewportWidth;
+         imageViewBox.Height = scrollViewer.ViewportHeight;
+      }
+
+      private static double Average(List<int> array)
+      {
+         if (array.Count == 0)
+            return -1;
+         else
+         {
+            double sum = 0;
+            for (int i = 0; i < array.Count; i++)
+            {
+               sum += array[i];
+            }
+            return sum / array.Count;
+         }
+      }
+      #endregion
    }
 }
