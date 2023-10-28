@@ -7,8 +7,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <StackPanel Orientation="Vertical">
-            <Grid Background="DarkGray">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Background="DarkGray" Grid.Row="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="40"/>
@@ -37,10 +40,12 @@
                 <TextBox Text="{Binding Path=GSaved, Mode=TwoWay}" IsHitTestVisible="False" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" Grid.Column="3" Width="60"/>
                 <TextBox Text="{Binding Path=BSaved, Mode=TwoWay}" IsHitTestVisible="False" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" Grid.Column="3" Width="60"/>
             </Grid>
-            <Viewbox x:Name="imageViewBox" Margin="10,10,10,10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Height="auto">
-                <Image Name="imageControl" MouseMove="imageControl_MouseMove" MouseUp="imageControl_MouseUp" />
-            </Viewbox>
-        </StackPanel>
-
+        <Grid Background="Black" Grid.Row="1">
+            <ScrollViewer Name="scrollViewer" Focusable="False" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Hidden" Grid.Column="0" Grid.Row="0">
+                <Viewbox x:Name="imageViewBox" Margin="10,10,10,10" ClipToBounds="True">
+                    <Image Name="imageControl" MouseMove="imageControl_MouseMove" MouseUp="imageControl_MouseUp" />
+                </Viewbox>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Window>

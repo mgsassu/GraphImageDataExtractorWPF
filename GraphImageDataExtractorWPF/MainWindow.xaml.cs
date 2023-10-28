@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using Microsoft.VisualBasic;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,6 +26,14 @@ namespace GraphImageDataExtractorWPF
    /// </summary>
    public partial class MainWindow : Window , INotifyPropertyChanged
    {
+      #region Constants
+      private const double MinZoom = 0.8;
+      private const double MaxZoom = 12.0;
+      private const double NoZoom = 1.0;
+
+      private const double ZoomInc = 0.1;
+      #endregion
+
       #region Private Properties
       private BitmapImage bitmapImage;
       private int bytesPerPixel = 4;
@@ -36,13 +45,21 @@ namespace GraphImageDataExtractorWPF
       private int rSaved = 0;
       private int gSaved = 0;
       private int bSaved = 0;
+      private double currentZoom = 1.0;
       #endregion
 
       #region Constructor
       public MainWindow()
       {
          InitializeComponent();
+
          DataContext = this;
+
+         // Set up Zoom
+         
+         PreviewMouseWheel += new MouseWheelEventHandler(MainWindow_PreviewMouseWheel);
+         //scrollViewer.ScrollChanged += new ScrollChangedEventHandler(scrollViewer_ScrollChanged);
+         ResetZoom();
       }
       #endregion
 
@@ -154,8 +171,7 @@ namespace GraphImageDataExtractorWPF
 
       private void btnLoadImage_Click(object sender, RoutedEventArgs e)
       {
-         // New object
-         bitmapImage = new BitmapImage();
+         
 
          // Open file
          OpenFileDialog ofd = new OpenFileDialog();
@@ -163,17 +179,24 @@ namespace GraphImageDataExtractorWPF
          ofd.InitialDirectory = System.IO.Directory.GetCurrentDirectory();
          if (ofd.ShowDialog(this) == true)
          {
+            // New object
+            bitmapImage = new BitmapImage();
+
+            // Initialize
             bitmapImage.BeginInit();
             bitmapImage.UriSource = new Uri(ofd.FileName);
             bitmapImage.EndInit();
+
+            // Get pixel array separately in memory
+            GetPixels(bitmapImage, ref pixels);
+
+            // Set as source
+            imageControl.Source = bitmapImage;
+            imageControl.UpdateLayout();
+
+            // reset zoom
+            ResetZoom();
          }
-
-         // Get pixel array separately in memory
-         GetPixels(bitmapImage, ref pixels);
-
-         // Set as source
-         imageControl.Source = bitmapImage;
-         imageControl.UpdateLayout();
       }
 
       private void btnSetColor_Click(object sender, RoutedEventArgs e)
@@ -185,6 +208,9 @@ namespace GraphImageDataExtractorWPF
       {
          Point p = e.GetPosition(imageControl);
          int i = ((int)p.X + (int)p.Y * (int)bitmapImage.Width) * bytesPerPixel;
+
+         if (i < 0 || i >= pixels.Length)
+            return;
          
          BMove = pixels[i];
          GMove = pixels[i+1];
@@ -223,6 +249,53 @@ namespace GraphImageDataExtractorWPF
          source.CopyPixels(pc, width * bytesPerPixel, 0);
       }
 
+      private void ResetZoom()
+      {
+         currentZoom = NoZoom;
+         imageViewBox.Width = scrollViewer.ViewportWidth;
+         imageViewBox.Height = scrollViewer.ViewportHeight;
+      }
+
+      private void MainWindow_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+      {
+         e.Handled = true;
+         Point pt = e.GetPosition(imageViewBox);
+         Point pt2 = e.GetPosition(scrollViewer);
+         double zoom = currentZoom;
+         if (e.Delta > 0)
+            zoom += ZoomInc;
+         else
+            zoom -= ZoomInc;
+         if (zoom < MinZoom)
+            zoom = MinZoom;
+         if (zoom > MaxZoom)
+            zoom = MaxZoom;
+
+         if (zoom == currentZoom)
+            return;
+
+         pt = new Point((pt.X / currentZoom) * zoom, (pt.Y / currentZoom) * zoom);
+         pt.Offset(-pt2.X, -pt2.Y);
+
+         currentZoom = zoom;
+         imageViewBox.Width = this.scrollViewer.ViewportWidth * zoom;
+         imageViewBox.Height = this.scrollViewer.ViewportHeight * zoom;
+
+
+         this.imageViewBox.BringIntoView(new Rect(pt, new Size(this.scrollViewer.ViewportWidth, this.scrollViewer.ViewportHeight)));
+      }
+
+      //private void scrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+      //{
+      //   if (e.ViewportWidthChange != 0)
+      //   {
+      //      imageViewBox.Width = this.scrollViewer.ViewportWidth * currentZoom;
+      //   }
+      //   if (e.ViewportHeightChange != 0)
+      //   {
+      //      imageViewBox.Height = this.scrollViewer.ViewportHeight * currentZoom;
+      //   }
+      //}
       #endregion
    }
 }
