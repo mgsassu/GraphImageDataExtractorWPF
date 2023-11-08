@@ -548,8 +548,8 @@ namespace GraphImageDataExtractorWPF
                }
                else
                {
-                  xArr.Add(Convert.ToString((col - xStart) * xMultiplier) + xDataStart);
-                  yArr.Add(Convert.ToString((yStart - averageDict[col]) * yMultiplier) + yDataStart);
+                  xArr.Add(Convert.ToString(((col - xStart) * xMultiplier + xDataStart)));
+                  yArr.Add(Convert.ToString(((yStart - averageDict[col]) * yMultiplier + yDataStart)));
                }
             }
 
